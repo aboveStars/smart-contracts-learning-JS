@@ -10,4 +10,6 @@ contract StorageFactory {
         SimpleStorage a_simpleStorage = new SimpleStorage();
         simpleStorageArray.push(a_simpleStorage);
     }
+
+    // we are on 3:16:48
 }
