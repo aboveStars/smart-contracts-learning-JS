@@ -1,0 +1,41 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ninterface AggregatorV3Interface {\n  function decimals() external view returns (uint8);\n\n  function description() external view returns (string memory);\n\n  function version() external view returns (uint256);\n\n  function getRoundData(uint80 _roundId)\n    external\n    view\n    returns (\n      uint80 roundId,\n      int256 answer,\n      uint256 startedAt,\n      uint256 updatedAt,\n      uint80 answeredInRound\n    );\n\n  function latestRoundData()\n    external\n    view\n    returns (\n      uint80 roundId,\n      int256 answer,\n      uint256 startedAt,\n      uint256 updatedAt,\n      uint80 answeredInRound\n    );\n}\n"
+    },
+    "contracts/FundMe.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.8;\n\nimport \"./PriceConverter.sol\";\n\n// 798,631 gas for creating this contract\n// 792,284 gas with constant\n// 768,705 gas with immutable\n\nerror NotOwner();\n\ncontract FundMe {\n    using PriceConverter for uint256;\n\n    // 21,459 WITH CONSTANT\n    // 23,559 WITH-OUT CONSTANT\n\n    uint256 public constant FEE = 50 * 1e18;\n    // CONSTANT Variables can not be set even Constructors.\n\n    address[] public funders;\n    mapping(address => uint256) public addressToAmountFunded;\n\n    address public immutable i_owner;\n\n    // Immutable variables can only be declared in Constructors. (so it means 1 time.)\n\n    AggregatorV3Interface public priceFeed;\n\n    constructor(address priceFeedAddress) {\n        i_owner = msg.sender;\n        priceFeed = AggregatorV3Interface(priceFeedAddress);\n    }\n\n    function fund() public payable {\n        require(\n            msg.value.getConversionRate(priceFeed) >= FEE,\n            \"FUND MORE BABE\"\n        );\n        funders.push(msg.sender);\n        addressToAmountFunded[msg.sender] = msg.value;\n    }\n\n    function withDraw() public onlyOwner {\n        /* for(startingIndex, endingIndex, step amount) */\n        for (\n            uint256 funderIndex = 0;\n            funderIndex <= funders.length - 1;\n            funderIndex++\n        ) {\n            address funder = funders[funderIndex];\n            addressToAmountFunded[funder] = 0;\n        }\n\n        funders = new address[](0);\n\n        /*\n        \n        // TRANSFER\n        // msg.sender = address\n        // payable(msg.sender) = payable address\n        payable(msg.sender).transfer(address(this).balance);\n\n        // SEND\n        bool sendSuccess = payable(msg.sender).send(address(this).balance);\n        require(sendSuccess);\n\n        */\n\n        // call\n        (bool callSuccess, ) = payable(msg.sender).call{\n            value: address(this).balance\n        }(\"\");\n        require(callSuccess, \"Call Failed\");\n    }\n\n    modifier onlyOwner() {\n        // with not using require() we can reduce gas usage...\n        if (msg.sender != i_owner) {\n            revert NotOwner();\n        }\n        _;\n    }\n\n    /*\n\n    If somebody wants to interact with contract but not with usual ways...\n        1.If a data with comes this TX, but this data NOT APPROPRITE ---> It triggers \"fallback()\"\n\n        2.If no data comes with TX and there is \"receive\" -----> it triggers \"reveive()\"\n            If no data comes with TX and there is no \"receive\" ----> It triggers \"fallback\"\n\n    */\n\n    receive() external payable {\n        fund();\n    }\n\n    fallback() external payable {\n        fund();\n    }\n}\n"
+    },
+    "contracts/PriceConverter.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\npragma solidity 0.8.8;\nimport \"@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol\";\n\nlibrary PriceConverter {\n    function getPrice(\n        AggregatorV3Interface priceFeed\n    ) internal view returns (uint256) {\n        (, int256 answer, , , ) = priceFeed.latestRoundData();\n        return uint256(answer * 1e10); // because price feed gives us with 8 deciamls, we converted it to 18 decimals.\n    }\n\n    function getConversionRate(\n        uint256 ethAmount,\n        AggregatorV3Interface priceFeed\n    ) internal view returns (uint256) {\n        uint256 ethPrice = getPrice(priceFeed);\n        uint256 ethAmountInUSD = (ethPrice * ethAmount) / 1e18; // (ethPrice/1e18)\n        return ethAmountInUSD;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
