@@ -15,8 +15,18 @@ developmentChains.includes(network.name)
           })
 
           it("allows people to fund and withdraw", async function () {
-              await fundMe.fund({ value: sendValue })
-              await fundMe.withDraw()
+              console.log("Funding...")
+              const transactionResponse = await fundMe.fund({
+                  value: sendValue,
+              })
+              console.log("Verifing Fund...")
+              await transactionResponse.wait(1)
+
+              console.log("Withdrawing...")
+              const transactionResponse2 = await fundMe.withDraw()
+              console.log("Verifing WITHDRAW...")
+              await transactionResponse2.wait(1)
+
               const endingBalance = await fundMe.provider.getBalance(
                   fundMe.address
               )

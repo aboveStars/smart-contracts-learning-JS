@@ -23,9 +23,14 @@ async function main() {
 
    // Deploying
    const contractFactory = new ethers.ContractFactory(abi, binary, wallet)
+
    console.log("Deploying please wait...")
    const contract = await contractFactory.deploy()
+
+   console.log("Deploying finished. Verifing in process")
    await contract.deployTransaction.wait(1)
+
+   console.log("Verify is finished.")
    console.log(`Contract address: ${contract.address}`)
 
    // get number

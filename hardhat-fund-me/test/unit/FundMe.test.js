@@ -11,15 +11,16 @@ const { developmentChains } = require("../../helper-hardhat-config")
           const sendValue = ethers.utils.parseEther("1") // 1 eth...
 
           beforeEach(async function () {
-              // const accounts = await ethers.getSigners();
-              // const account = accounts[0]
-
-              deployerResponse = await getNamedAccounts()
-              deployer = deployerResponse.deployer
-
+              // Deploying needed contracts for tests....
+              console.log("All needed contracts are being deployed....")
               await deployments.fixture(["all"])
-              fundMe = await ethers.getContract("FundMe", deployer) // most recent contract...
-
+              
+              // Take 'fundMe' contract from pool (local) or real pool (pool --> network)
+              const { deployer } = await getNamedAccounts()
+              console.log("Getting contract to be used...")
+              fundMe = await ethers.getContract("FundMe", deployer) // Getting most recent contact, and do transactions with given signer (deployer)
+              
+              // Take 'aggregator' contract from pool (local) or real pool (pool --> network)
               mockV3Aggregator = await ethers.getContract(
                   "MockV3Aggregator",
                   deployer
