@@ -1,7 +1,6 @@
 # smart-contracts-learning-JS
-```js
 This repo contains my "lesson" files for "smart contract development" with "javascript"
-```
+
 ## Used Frameworks
   * [Hardhat](https://hardhat.org/)
   * [Ethers.js](https://docs.ethers.org/v5/)
