@@ -45,11 +45,11 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
     event WinnerPicked(address indexed winner);
 
     constructor(
-        address vrfCoordinatorV2,
-        uint256 entranceFee,
-        bytes32 gasLane,
-        uint64 subscriptionId,
-        uint32 callbackGasLimit,
+        address vrfCoordinatorV2, // done
+        uint256 entranceFee, // done
+        bytes32 gasLane, // done
+        uint64 subscriptionId, // done
+        uint32 callbackGasLimit, // done
         uint256 intervall
     ) VRFConsumerBaseV2(vrfCoordinatorV2) {
         i_entranceFee = entranceFee;
@@ -180,5 +180,9 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
 
     function getRequestConfirmations() public pure returns (uint256) {
         return REQUEST_CONFIRMATIONS;
+    }
+
+    function getInterval() public view returns (uint256) {
+        return i_interval;
     }
 }
