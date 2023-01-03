@@ -39,4 +39,12 @@ module.exports = {
     gasReporter: {
         enabled: false,
     },
+    mocha: {
+        timeout: 1000000, //
+    },
+    etherscan: {
+        apiKey: {
+            goerli: ETHERSCAN_API_KEY,
+        },
+    },
 }

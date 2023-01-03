@@ -33,8 +33,8 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
         log("VRF things are done")
         log("---------------------------------")
     } else {
-        vrfCoordinatorV2Address = networkConfig[chainId][vrfCoordinatorV2Address]
-        subscriptionId = networkConfig[chainId]["subscriptionID"]
+        vrfCoordinatorV2Address = networkConfig[chainId]["vrfCoordinatorV2Address"]
+        subscriptionId = networkConfig[chainId]["subscriptionId"]
     }
 
     const entranceFee = networkConfig[chainId]["entranceFee"]

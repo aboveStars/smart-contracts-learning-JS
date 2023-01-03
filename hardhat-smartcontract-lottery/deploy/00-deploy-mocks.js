@@ -18,6 +18,10 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
         })
         log("Mock Deployed....")
         log("-------------------------------")
+    } else {
+        log("We are on real chain...")
+        log("...We don't deploy mocks ")
+        log("-------------------------------")
     }
 }
 
