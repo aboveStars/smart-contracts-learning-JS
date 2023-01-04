@@ -5,7 +5,7 @@ const { networkConfig, developmentChains } = require("../../helper-harhdat-confi
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("Raffle Unit Test", async function () {
-          let raffle, vrfCoordinatorV2Mock, raffleEntranceFee, deployer, interval
+          let raffle, vrfCoordinatorV2Mock, raffleEntranceFee, deployer, interval, firstTimeStamp
 
           beforeEach(async function () {
               deployer = (await getNamedAccounts()).deployer
@@ -19,6 +19,8 @@ const { networkConfig, developmentChains } = require("../../helper-harhdat-confi
 
               raffleEntranceFee = networkConfig[network.config.chainId]["entranceFee"]
               interval = networkConfig[network.config.chainId]["interval"]
+
+              firstTimeStamp = await raffle.getLastTimeStamp()
           })
 
           describe("constructor", function () {
@@ -186,6 +188,48 @@ const { networkConfig, developmentChains } = require("../../helper-harhdat-confi
                           txR.events[1].args.requestId,
                           raffle.address
                       )
+                  })
+              })
+          })
+
+          describe("Interval is in action", function () {
+              it("interval control", async function () {
+                  await new Promise(async (resolve, reject) => {
+                      raffle.once("WinnerPicked", async () => {
+                          console.log("Found the event")
+                          try {
+                              // getting values:
+                              const lastTimeStamp = await raffle.getLastTimeStamp()
+                              // assertion...
+                              console.log(
+                                  `Our Result Should Be: ${lastTimeStamp
+                                      .sub(firstTimeStamp)
+                                      .toString()}`
+                              )
+                              assert(lastTimeStamp.sub(firstTimeStamp) >= interval)
+                          } catch (error) {
+                              reject(error)
+                          }
+                          resolve()
+                      })
+
+                      console.log("entering raffle")
+                      await raffle.enterRaffle({ value: raffleEntranceFee })
+
+                      console.log("time-travel")
+                      await network.provider.send("evm_increaseTime", [Number(interval) + 1])
+                      await network.provider.send("evm_mine", [])
+
+                      console.log("performing upkeep")
+                      tx = await raffle.performUpkeep([])
+                      txR = await tx.wait(1)
+
+                      console.log("vrf...")
+                      await vrfCoordinatorV2Mock.fulfillRandomWords(
+                          txR.events[1].args.requestId,
+                          raffle.address
+                      )
+                      console.log("vrf done")
                   })
               })
           })

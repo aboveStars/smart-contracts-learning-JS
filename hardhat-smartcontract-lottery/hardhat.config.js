@@ -40,7 +40,7 @@ module.exports = {
         enabled: false,
     },
     mocha: {
-        timeout: 1000000, //
+        timeout: 1000000, // 1000,000 (seconds) ..... 1 second = 1000
     },
     etherscan: {
         apiKey: {
