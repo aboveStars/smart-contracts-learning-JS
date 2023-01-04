@@ -2,7 +2,7 @@ const { run } = require("hardhat")
 
 async function verify(contractAddress, args) {
     // args for constructor...
-    console.log("Verifying contract....")
+    console.log("Verify process has been started.")
     try {
         await run("verify:verify", {
             address: contractAddress,
@@ -15,5 +15,6 @@ async function verify(contractAddress, args) {
             console.log(e)
         }
     }
+    
 }
 module.exports = { verify }
