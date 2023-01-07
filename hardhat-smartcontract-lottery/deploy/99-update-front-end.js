@@ -22,7 +22,7 @@ async function updateContractAddresses() {
         }
     }
     else {
-        currentAddresses[chainId] = [raffle.address]
+        currentAddresses[chainId].push(raffle.address)
     }
 
     fs.writeFileSync(FRONT_END_ADDRESSES_FILE, JSON.stringify(currentAddresses))

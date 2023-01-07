@@ -15,7 +15,7 @@ const { networkConfig, developmentChains } = require("../../helper-harhdat-confi
               vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock", deployer)
 
               const subId = await raffle.getSubscriptionId()
-              vrfCoordinatorV2Mock.addConsumer(subId, raffle.address)
+              await vrfCoordinatorV2Mock.addConsumer(subId, raffle.address)
 
               raffleEntranceFee = networkConfig[network.config.chainId]["entranceFee"]
               interval = networkConfig[network.config.chainId]["interval"]
