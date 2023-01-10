@@ -21,4 +21,4 @@ async function getWeth() {
     console.log(`We have ${wethBalance} ETH in wETH`)
 }
 
-module.exports = { getWeth }
+module.exports = { getWeth, AMOUNT }
