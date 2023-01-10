@@ -13,6 +13,7 @@ This repo contains my **lesson** files for **smart contract development** with *
   * [Advanced operations with Hardhat (lottery)](https://github.com/aboveStars/smart-contracts-learning-JS/tree/main/hardhat-smartcontract-lottery)
   * [Advanced operations with NextJS (fullstack/lottery/web)](https://github.com/aboveStars/smart-contracts-learning-JS/tree/main/nextjs-smartcontract-lottery)
   * [Advanced operations with Hardhat (erc-20/token)](https://github.com/aboveStars/smart-contracts-learning-JS/tree/main/hardhat-erc20)
+  * [Advanced operations with Hardhat (defi-aave)](https://github.com/aboveStars/smart-contracts-learning-JS/tree/main/hardhat-defi)
   
   
 #### Thanks To
