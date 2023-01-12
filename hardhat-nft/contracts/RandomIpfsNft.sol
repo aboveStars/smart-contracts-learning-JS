@@ -7,6 +7,7 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+
 error RandomIpfsNft_RangeOutOfBounds();
 error RandomIpfsNft_PoorGuy();
 error TransferFailed();
