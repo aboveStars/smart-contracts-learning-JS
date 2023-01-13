@@ -1,10 +1,1 @@
-SolidityBasics-RemixIDE/** linguist-vendored=false
-erhers-simple-storage/** linguist-vendored=false
-hardhat-defi/** linguist-vendored=false
-hardhat-erc20/** linguist-vendored=false
-hardhat-fund-me/** linguist-vendored=false
-hardhat-nft/** linguist-vendored=false
-hardhat-simple-storage/** linguist-vendored=false
-hardhat-smartcontract-lottery/** linguist-vendored=false
-html-fund-me/** linguist-vendored=false
-nextjs-smartcontract-lottery/** linguist-vendored=false
+dist/* linguist-vendored=false
