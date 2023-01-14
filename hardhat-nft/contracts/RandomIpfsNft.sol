@@ -7,7 +7,6 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-
 error RandomIpfsNft_RangeOutOfBounds();
 error RandomIpfsNft_PoorGuy();
 error TransferFailed();
@@ -53,11 +52,11 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         i_fee = _fee;
     }
 
-    function requestNft() public payable returns (uint256 requestID) {
+    function requestNft() public payable returns (uint256) {
         if (msg.value < i_fee) {
             revert RandomIpfsNft_PoorGuy();
         }
-        requestID = i_vrfCoordinator.requestRandomWords(
+        uint256 requestID = i_vrfCoordinator.requestRandomWords(
             i_gasLane,
             i_subId,
             REQUEST_CONFIRMATIONS,
@@ -66,6 +65,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         );
         s_requestIdToSender[requestID] = msg.sender;
         emit NftRequested(requestID, msg.sender);
+        return requestID;
     }
 
     function fulfillRandomWords(
@@ -82,6 +82,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
          *  60-99 => St.Bernard
          */
         Breed dogBreed = getBreedFromModdedRng(moddedRng);
+        s_tokenCounter += 1;
         _safeMint(dogOwner, newTokenId);
         _setTokenURI(newTokenId, s_dogTokenUris[uint256(dogBreed)]);
         emit NftMinted(dogBreed, dogOwner);

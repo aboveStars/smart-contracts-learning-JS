@@ -5,7 +5,6 @@ const {
     storeImages,
     storeTokenUriMetadata,
 } = require("../utils/uploadToPinata")
-const { LogDescription } = require("@ethersproject/abi")
 const imagesLocation = "./images/randomNft"
 
 const metaDataTemplate = {
@@ -28,9 +27,18 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log("--------------")
 
     log("Token-NFT URI Stuff Process has started....")
+    console.log("Upload to pinata: " + process.env.UPLOAD_TO_PINATA)
+
     let tokenUris
-    if (process.env.UPLOAD_TO_PINATA) {
+    if (process.env.UPLOAD_TO_PINATA == "true") {
         tokenUris = await handleTokenUris()
+    } else {
+        console.log(".....we are using old URI's")
+        tokenUris = [
+            "ipfs://QmW5BSp8asZ1QZYjQYg5dV3LPsTj3t1Gt2pXRwjmfAwhBt",
+            "ipfs://QmbPNZjfsJmCCdnRUgoHmnwmVXupocFvfncAq6VRPjd9UF",
+            "ipfs://QmU76qHHZX6o377b6KdbKpLtz4vq8kaZenvxuWkrJmAb5U",
+        ]
     }
     log("--------------")
 
@@ -44,6 +52,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         const txR = await tx.wait(1)
 
         subId = await txR.events[0].args.subId
+
+        await vrfCoordinatorV2Mock.fundSubscription(
+            subId,
+            ethers.utils.parseEther("10")
+        )
     } else {
         vrfCoordinatorV2Address =
             networkConfig[network.config.chainId]["vrfCoordinatorV2Address"]
@@ -56,7 +69,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         networkConfig[network.config.chainId]["gasLane"],
         networkConfig[network.config.chainId].callbackGasLimit,
         tokenUris,
-        ethers.utils.parseEther(networkConfig[network.config.chainId].mintFee),
+        networkConfig[network.config.chainId].mintFee,
     ]
 
     const randomIpfsNft = await deploy("RandomIpfsNft", {
@@ -65,6 +78,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         log: true,
         waitConfirmations: network.config.blockConfirmations || 1,
     })
+    log("Deploying done")
+    log("-----------")
 
     if (!developmentChains.includes(network.name)) {
         await verify(randomIpfsNft.address, args)
@@ -85,7 +100,7 @@ async function handleTokenUris() {
     console.log("---------")
 
     console.log("We are preparing to make MetaData for our NFT.....")
-    log("--------------")
+    console.log("--------------")
     for (index in imageUploadResponse) {
         console.log(
             `We are creating metadata for ${files[index].replace(
