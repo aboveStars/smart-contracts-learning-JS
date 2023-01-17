@@ -10,7 +10,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         from: deployer,
         args: [],
         log: true,
-        waitConfirmations: network.config.blockConfirmations || 1
+        waitConfirmations: network.config.blockConfirmations || 1,
     })
 
     if (!developmentChains.includes(network.name)) {
@@ -18,4 +18,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     }
 }
 
-module.exports.tags = ["all", "basicNFT"]
+module.exports.tags = ["all", "basicNFT", "main"]

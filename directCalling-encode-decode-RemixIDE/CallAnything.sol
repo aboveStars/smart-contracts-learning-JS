@@ -30,4 +30,18 @@ contract CallAnything {
         );
         return (bytes4(returnData), success);
     }
+
+    function callTransferFuntionDirectlySignature(
+        address someAddress,
+        uint256 amount
+    ) public returns (bytes4, bool) {
+        (bool success, bytes memory returnData) = address(this).call(
+            abi.encodeWithSignature(
+                "transfer(address,uint256)",
+                someAddress,
+                amount
+            )
+        );
+        return (bytes4(returnData), success);
+    }
 }
