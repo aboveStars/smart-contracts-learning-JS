@@ -7,21 +7,11 @@ const { moveBlocks } = require("../utils/move-blocks")
 async function mintAndList() {
     const nftMarketPlace = await ethers.getContract("NftMarketPlace")
     const basicNft = await ethers.getContract("BasicNFT")
-    console.log("Minting.....")
 
-    const mintTx = await basicNft.mintNft()
-    const rTx = await mintTx.wait(1)
-    const tokenId = await rTx.events[0].args.tokenId
+    tx = await nftMarketPlace.cancelListing(basicNft.address, 0)
+    rTx = await tx.wait(1)
 
-    console.log("Approving nft....")
-    const approvalTx = await basicNft.approve(nftMarketPlace.address, tokenId)
-    await approvalTx.wait(1)
-
-    console.log("Listing nft....")
-
-    const tx = await nftMarketPlace.listItem(basicNft.address, tokenId, PRICE)
-    await tx.wait(1)
-    console.log("Listed.")
+    console.log("Cancelled successfully")
 
     if (network.config.chainId == "31337") {
         await moveBlocks(2, (sleepAmount = 1000))
