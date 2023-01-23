@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@next/font": "13.1.4",
+    "ethers": "^5.7.2",
     "magic-sdk": "^13.1.0",
     "moralis": "^2.11.1",
     "moralis-v1": "^1.12.0",

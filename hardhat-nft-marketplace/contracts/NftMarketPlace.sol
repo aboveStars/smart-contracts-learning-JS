@@ -180,4 +180,8 @@ contract NftMarketPlace is ReentrancyGuard {
     function getProceeeds(address seller) external view returns (uint256) {
         return s_proceeds[seller];
     }
+
+    fallback() external payable {}
+
+    receive() external payable {}
 }
