@@ -21,7 +21,7 @@ export default function Home() {
         functionName: "getListing",
         params: {
             nftAddress: nftAddress,
-            tokenId: "0",
+            tokenId: "5",
         },
     })
 
@@ -39,7 +39,7 @@ export default function Home() {
 
     return (
         <div>
-            {isWeb3Enabled ? (
+            {isWeb3Enabled && price > 0 ? (
                 <NFTBox
                     price={price}
                     nftAddress={nftAddress}

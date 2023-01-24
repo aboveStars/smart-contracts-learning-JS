@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useWeb3Contract, useMoralis } from "react-moralis"
+import { useWeb3Contract, useMoralis, useWeb3Transfer } from "react-moralis"
 
 import basicNftabi from "../constants/basicNftabi.json"
 import marketAbi from "../constants/marketAbi.json"
@@ -10,6 +10,8 @@ import { Card } from "web3uikit"
 import { ethers } from "ethers"
 
 import UpdateListingModal from "./UpdateListing"
+
+import { useNotification } from "web3uikit"
 
 const nftAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
 const marketAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
@@ -56,6 +58,17 @@ export default function NFTBox({
         },
     })
 
+    const { runContractFunction: buyItem } = useWeb3Contract({
+        abi: marketAbi,
+        contractAddress: marketAddress,
+        functionName: "buyItem",
+        msgValue: price,
+        params: {
+            nftAddress: nftAddress,
+            tokenId: tokenId,
+        },
+    })
+
     async function updateUI() {
         // get Token Uri
         const tokenUri = await getTokenURI()
@@ -94,7 +107,26 @@ export default function NFTBox({
         : truncateStr(seller || "", 15)
 
     const handleCardClicked = () => {
-        isOwnedByUser ? setShowModal(true) : console.log("Let's buy!")
+        isOwnedByUser ? setShowModal(true) : buyer()
+    }
+
+    const buyer = async () => {
+        await buyItem({
+            onError: (error) => console.log(error),
+            onSuccess: (results) => handleBuyItemSuccess(results),
+        })
+    }
+
+    const dispatch = useNotification()
+    const handleBuyItemSuccess = async (tx) => {
+        await tx.wait(1)
+        dispatch({
+            type: "success",
+            message: "Item Bought Successfully",
+            title: "Item Bought",
+            position: "topR",
+        })
+        console.log("here3")
     }
 
     const hideModal = () => {
@@ -109,7 +141,7 @@ export default function NFTBox({
                         <UpdateListingModal
                             isVisible={showModal}
                             nftAddress={nftAddress}
-                            tokenId={0}
+                            tokenId={5}
                             marketPlaceAddress={marketAddress}
                             onClose={hideModal}
                         />
