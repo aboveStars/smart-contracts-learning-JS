@@ -12,6 +12,8 @@
         "@pinata/sdk": "^2.1.0",
         "@typechain/ethers-v5": "^10.1.0",
         "@typechain/hardhat": "^6.1.2",
+        "@types/chai": "^4.3.4",
+        "@types/node": "^18.11.18",
         "base64-sol": "^1.1.0",
         "chai": "^4.2.0",
         "dotenv": "^16.0.3",
@@ -23,7 +25,9 @@
         "prettier": "^2.8.2",
         "solhint": "^3.3.7",
         "solidity-coverage": "^0.8.2",
-        "typechain": "^8.1.0"
+        "ts-node": "^10.9.1",
+        "typechain": "^8.1.0",
+        "typescript": "^4.9.4"
     },
     "scripts": {
         "test": "yarn hardhat test",
